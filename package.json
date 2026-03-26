@@ -28,7 +28,7 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "USERNAME_GITHUB_ANDA",
+        "owner": "hantalah30",
         "repo": "hawai-project"
       }
     ]
