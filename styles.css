@@ -137,16 +137,51 @@ body {
 .drop-zone {
     height: 180px; display: flex; justify-content: center; align-items: center;
     border: 2px dashed rgba(0, 210, 255, 0.3); cursor: pointer;
-    transition: all 0.3s; position: relative; overflow: hidden;
+    transition: all 0.1s; position: relative; overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    --rx: 0deg; --ry: 0deg; --px: 50%; --py: 50%;
+    transform: rotateX(var(--rx)) rotateY(var(--ry));
 }
 .drop-zone:hover { border-color: var(--accent); background: rgba(0, 210, 255, 0.05); }
 .drop-zone.active { border-color: var(--success); transform: scale(1.02); background: rgba(0, 230, 118, 0.05); }
 
-.drop-content { text-align: center; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.glow-follow {
+    position: absolute; inset: -2px; z-index: -1;
+    background: radial-gradient(circle at var(--px) var(--py), rgba(0, 210, 255, 0.4) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+}
+.drop-zone:hover .glow-follow { opacity: 1; }
+
+.drop-content { text-align: center; display: flex; flex-direction: column; align-items: center; pointer-events: none; transform: translateZ(20px); }
 .cloud-icon { color: var(--accent); margin-bottom: 0.5rem; transition: 0.3s; }
 .drop-zone:hover .cloud-icon { transform: translateY(-5px); }
 .drop-content h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
 .file-hints { font-size: 0.75rem; color: var(--text-dim); }
+
+/* Toggle Container */
+.toggle-container {
+    display: flex; align-items: center; gap: 1rem; padding: 1rem;
+    margin-top: -1rem; border-color: transparent;
+    background: linear-gradient(90deg, rgba(30, 30, 36, 0.6), rgba(30, 30, 36, 0.2));
+}
+.toggle-text { display: flex; flex-direction: column; }
+.toggle-title { font-size: 0.85rem; font-weight: 600; color: #fff; }
+.toggle-desc { font-size: 0.7rem; color: var(--text-dim); }
+
+/* Switch css */
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid var(--border-color);
+}
+.slider:before {
+    position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background-color: var(--text-dim); transition: .4s; border-radius: 50%;
+}
+input:checked + .slider { background-color: rgba(0, 210, 255, 0.3); border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); }
 
 /* History Section */
 .history-section h3 { font-size: 0.9rem; font-weight: 600; color: var(--text-dim); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; }
@@ -197,5 +232,19 @@ body {
                       radial-gradient(circle at 10% 80%, rgba(58, 123, 213, 0.05) 0%, transparent 40%);
 }
 
+/* Boot Sequence */
+.boot-sequence {
+    position: fixed; inset: 0; background-color: var(--bg-dark); z-index: 9999;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: opacity 0.4s ease-out; pointer-events: none;
+}
+.boot-sequence.done { opacity: 0; }
+
+.simple-loader { display: flex; flex-direction: column; align-items: center; gap: 1rem; animation: pulseLogo 1.5s ease-in-out infinite; }
+.loader-logo { width: 80px; height: 80px; border-radius: 16px; box-shadow: 0 0 30px var(--accent-glow); }
+.simple-loader h2 { font-size: 1.5rem; font-weight: 800; color: #fff; letter-spacing: 1px; margin: 0; }
+.simple-loader p { font-size: 0.8rem; color: var(--accent); margin: 0; letter-spacing: 3px; text-transform: uppercase; font-weight: 600; }
+
+@keyframes pulseLogo { 0% { transform: scale(0.98); opacity: 0.8; } 50% { transform: scale(1.02); opacity: 1; filter: brightness(1.2); } 100% { transform: scale(0.98); opacity: 0.8; } }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 230, 118, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); } }
-@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }

@@ -159,3 +159,16 @@ ipcMain.handle('install-update', () => {
 ipcMain.handle('check-update', () => {
     autoUpdater.checkForUpdates();
 });
+
+ipcMain.handle('count-active-mods', () => {
+    try {
+        if (!fs.existsSync(configPath)) return 0;
+        const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        const stpluginPath = path.join(configData.steamPath, 'config', 'stplug-in');
+        if (!fs.existsSync(stpluginPath)) return 0;
+        const files = fs.readdirSync(stpluginPath);
+        return files.filter(f => f.endsWith('.lua')).length;
+    } catch(err) {
+        return 0;
+    }
+});

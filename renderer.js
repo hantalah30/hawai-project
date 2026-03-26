@@ -7,11 +7,18 @@ const btnClearCache = document.getElementById('btn-clear-depotcache');
 const btnClearMods = document.getElementById('btn-clear-mods');
 const steamIndicator = document.getElementById('steam-indicator');
 const steamStatusText = document.getElementById('steam-status-text');
+const modCounterText = document.getElementById('mod-counter-text');
 const statusBubble = document.getElementById('status-bubble');
 const overlay = document.getElementById('setup-overlay');
 const btnSetupPath = document.getElementById('btn-setup-path');
 const historyList = document.getElementById('history-list');
 const btnCheckUpdate = document.getElementById('btn-check-update');
+const toggleRestart = document.getElementById('toggle-autorestart');
+
+// Loading Sequence
+setTimeout(() => {
+    document.getElementById('boot-sequence').classList.add('done');
+}, 1000);
 
 // Auto Updater Listeners
 btnCheckUpdate.addEventListener('click', () => {
@@ -94,6 +101,28 @@ dropZone.addEventListener('dragenter', (e) => { e.preventDefault(); dropZone.cla
 dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('active'); });
 dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('active'); });
 
+// 3D Tilt Logic
+dropZone.addEventListener('mousemove', (e) => {
+    const rect = dropZone.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const xc = rect.width / 2;
+    const yc = rect.height / 2;
+    const rx = ((y - yc) / yc) * -5;
+    const ry = ((x - xc) / xc) * 5;
+    
+    dropZone.style.setProperty('--rx', `${rx}deg`);
+    dropZone.style.setProperty('--ry', `${ry}deg`);
+    dropZone.style.setProperty('--px', `${x}px`);
+    dropZone.style.setProperty('--py', `${y}px`);
+});
+
+dropZone.addEventListener('mouseleave', () => {
+    dropZone.style.setProperty('--rx', `0deg`);
+    dropZone.style.setProperty('--ry', `0deg`);
+});
+
 dropZone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropZone.classList.remove('active');
@@ -132,7 +161,15 @@ async function handleRawPaths(files) {
         if (result.success) {
             updateBubble('success', `Berhasil (${result.files.length})`);
             result.files.forEach(f => addHistoryItem(f));
-            showToast('File berhasil masuk! Jangan lupa Restart Steam.');
+            showToast('File berhasil masuk!');
+
+            // Auto-restart if toggle is on
+            if (toggleRestart.checked) {
+                showToast('Auto-Restarting Steam...');
+                window.electronAPI.restartSteam();
+            } else {
+                showToast('Jangan lupa Restart Steam Anda.');
+            }
         } else {
             updateBubble('error', 'Injeksi sebagian gagal');
             showToast(result.message);
@@ -154,6 +191,10 @@ setInterval(async () => {
             steamIndicator.className = 'status-indicator offline';
             steamStatusText.textContent = 'Mati';
         }
+
+        // Poll Mod Counter
+        const totalMods = await window.electronAPI.countActiveMods();
+        modCounterText.textContent = `${totalMods} Mod Aktif`;
     } catch(e) {}
 }, 3000);
 

@@ -8,6 +8,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Simple Loading Sequence -->
+    <div id="boot-sequence" class="boot-sequence">
+        <div class="simple-loader">
+            <img src="logo.png" alt="HAWAI Logo" class="loader-logo">
+            <h2>HAWAI Project</h2>
+            <p>Loading...</p>
+        </div>
+    </div>
+
     <div class="app-layout">
         <!-- Panel Kiri (Sidebar) -->
         <aside class="sidebar">
@@ -27,6 +36,17 @@
                 <div class="status-text">
                     <span class="label">Steam Process</span>
                     <span class="value" id="steam-status-text">Mengecek...</span>
+                </div>
+            </div>
+
+            <!-- Mod Counter -->
+            <div class="steam-status-box" style="margin-top: -0.75rem;">
+                <div class="history-item tag lua" style="margin: 0; padding: 4px 6px; animation: none;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                </div>
+                <div class="status-text">
+                    <span class="label">Total LUA Aktif</span>
+                    <span class="value" id="mod-counter-text">0 Mod</span>
                 </div>
             </div>
 
@@ -71,6 +91,7 @@
             </div>
 
             <div id="drop-zone" class="drop-zone glass-card">
+                <div class="glow-follow"></div>
                 <input type="file" id="file-input" multiple accept=".lua,.manifest" style="display: none;">
                 <div class="drop-content">
                     <div class="icon-pulse">
@@ -78,6 +99,18 @@
                     </div>
                     <h3>Klik atau Lepas File Di Sini</h3>
                     <p class="file-hints">Mendukung multi-select (.lua, .manifest)</p>
+                </div>
+            </div>
+
+            <!-- Auto Restart Toggle -->
+            <div class="toggle-container glass-card">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-autorestart">
+                    <span class="slider"></span>
+                </label>
+                <div class="toggle-text">
+                    <span class="toggle-title">Auto-Restart Steam</span>
+                    <span class="toggle-desc">Otomatis restart Steam setelah injeksi berhasil</span>
                 </div>
             </div>
 

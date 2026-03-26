@@ -12,5 +12,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getPathForFile: (file) => webUtils ? webUtils.getPathForFile(file) : file.path,
     onUpdateAvailable: (callback) => ipcRenderer.on('update-available', callback),
     onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', callback),
-    installUpdate: () => ipcRenderer.invoke('install-update')
+    installUpdate: () => ipcRenderer.invoke('install-update'),
+    countActiveMods: () => ipcRenderer.invoke('count-active-mods')
 });
