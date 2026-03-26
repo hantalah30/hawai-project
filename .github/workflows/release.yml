@@ -1,0 +1,30 @@
+name: Build and Release HAWAI Project
+
+on:
+  push:
+    tags:
+      - 'v*' # Workflow akan berjalan ketika Anda push tag versi (contoh: v1.0.0, v1.0.1)
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Diupdate ke v4 biar warning hilang
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4 # Diupdate ke v4
+        with:
+          node-version: 20 # Diupdate ke 20 biar lebih stabil untuk Electron baru
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build and Publish Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --publish always
