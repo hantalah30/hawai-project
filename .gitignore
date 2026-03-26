@@ -1,0 +1,8 @@
+node_modules/
+dist/
+build_log.txt
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea/
